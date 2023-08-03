@@ -1,0 +1,174 @@
+NEXUS 
+What are artifacts? 
+Artifacts are an assembly of your project assets that you put together to test, deploy, or distribute your software solution or its part.
+Example of artifacts?
+Artifactory repository 	Packages 
+Maven repo	.jar, .war, .ear 
+Yum repo 	Yum packages (tree, vim, git etc.) 
+Chocolatey repo 	Choco packages 
+
+An artifact created depends on the project’s language:
+Java          app.jar, maven-app.war, bao.ear
+Docker     Docker images, Docker build, Docker run 
+NodeJs    npm package 
+Yum         yum packages ( yum is redhat & Centos package manager ) 
+
+IQ : how have you applied nexus in your environment? 
+•	Installation and configuration of the nexus server in redhat.
+•	Creating a maven-remote-repo or antifactory in nexus.
+•	Uploading java, nodejs, e.t.c artifacts into nexus 
+•	Securing the nexus server
+•	Retreving artifacts from nexus 
+•	Troubleshooting build and uploading related issues. 
+
+Difference between Jfrog and nexus:
+Nexus:
+•	Nexus is an open source artifactory repository 
+•	It is used to store and retrieve build artifacts.
+•	Nexus acts as a disaster recovery server for maven.
+Jfrog:
+•	A licensed artifactory repository – means you pay for it
+•	It is used to store & retrieve build artifacts.
+
+NB!! – making a configuration script 
+•	When you make such a script, if it requires you to create a new user first.
+•	Manually create a new user and switch to that user then create and run your configuration script. 
+•	If you include creating and switching to a new user in your script, the script will automatically stop working the moment the script switches user. 
+
+How to configure your nexus server?
+•	Copy and make script from your github server 
+
+Login credentials for your nexus on your web browser?
+•	When create a new server, the login credentials are:
+•	Username: admin
+•	Password: admin123
+
+What is your nexus home directory?
+/opt/nexus 
+
+Difference between nexus and other servers so far:
+•	Nexus does not have a conf directory
+•	All it’s configuration files are in the etc directory
+
+What is nexus default port number:
+•	Port 8081 
+
+
+What is the command to deploy a file to nexus on the server?
+Mvn deploy 
+How to secure your nexus server:
+•	vi /opt/nexus/etc/nexus-default.properties
+you will see: 
+1.	application-port=8081
+2.	nexus-context-path=/
+
+•	1
+•	you can change the port number to a more secure port number, remember to restart your server once you do.
+•	You can run sudo systemctl restart nexus 
+•	2
+•	Add a name or a number at the end of / to make the context path more secure like: nexus-context-path=/banjisama
+•	So now to access the web browser you would have to type:
+http:// 52.87.249.152:8081/banjisama – then you would be able to access nexus online
+
+how to change the nexus default password & add users online:
+•	change password: click on admin  change password
+•	add user – click on settings  users on the left-hand side  create local user on the top left-hand corner. 
+
+How to create a new repository online:
+•	click on settings  repositories  create local repositories
+•	remember to choose hosted repository because we want to store/host our artifacts in this repo. 
+•	Under Hosted, you will see deployment policy, if it is disabled once you run mvn deploy and it makes a build and deploys it to the maven remote repo, if the run the same command again it will lead to a build fail.
+•	Unless you vi into to pom.xml and change the version number under the version tag     <version>  <version>
+•	NB! The reason for is that new versions are created every time we make a build, if we are not satisfied with our current version, we can roll back to a previous version we liked. 
+•	If you enable it, you can run mvn deploy as much as you want, when you run it the second time it will update the first directory you uploaded and replace it with the latest build. 
+
+NB!! Version policy:
+•	choosing the correct version policy is very important, we have Release, snapshot and mixed.
+•	How do you know which one to choose?
+
+•	When you push a project to github we have the dev and master branch.
+•	If the project is pulled from the dev branch into maven and we make a build, if we want to back up this artifact, we will choose a snapshot version policy
+•	If the project is pulled from the master branch into maven and we make a build, if we want to back up this artifact, we will choose a release version policy.
+•	Basically release version policy are for finished products while snapshot are for WIP 
+
+Difference between browse and the setting icon?
+•	If you click on browse and then repository, once you click on any repository you can read the contents of the repo
+•	If you click on setting and the repository, you can delete or edit that repository.
+
+Maven-Nexus-Integration 
+To integrate maven with nexus you need to do 2 things in maven:
+1)	Create your artifactories on the nexus web browser and add them in the distribution tag in the pom.xml file.
+2)	Configure nexus login credentials in the settings.xml file in  the conf dir.
+
+
+
+•	1
+•	Once an artifactory is created in nexus you can copy that url
+•	Vi pom.xml  & paste it under the distributions tag
+•	NB! Make sure the port number and the version policy is correct and placed under the correct heading. 
+
+<distributionManagement>
+            <repository>
+              <id>nexus</id>
+              <name>Landmark Technologies Releases Nexus Repository</name>
+              <url>http://54.163.96.186:8081/banjisama/repository/mv-release-repo/</url>
+            </repository>
+
+            <snapshotRepository>
+              <id>nexus</id>
+              <name>Landmark Technologies Snapshot Nexus Repository </name>
+              <url>http://54.163.96.186:8081/banjisama/repository/mv-snapshot-repo/</url>
+            </snapshotRepository>
+
+        </distributionManagement>
+
+•	2
+•	vi /opt/maven/conf/settings.xml
+•	look for the servers tag and add your nexus login credentials just before the end of the servers tag 
+•	under the servers tag edit deploymentRepo, repouser & reoppwd  put nexus, your username and password respectively  paste these edits at the end of the servers tag.
+•	NB! Do not replace the initial one, copy and paste it just before the end of the servers tag then edit it and put in your own information. 
+
+•	3
+•	Now if you run mvn deploy, it will successfully build and deploy the artifacts to the maven remote artifactory. 
+
+
+
+
+
+
+
+
+
+<servers>
+    <!-- server
+     | Specifies the authentication information to use when connecting to a particular server, identified by
+     | a unique name within the system (referred to by the 'id' attribute below).
+     |
+     | NOTE: You should either specify username/password OR privateKey/passphrase, since these pairings are
+     |       used together.
+     |
+    <server>
+      <id>deploymentRepo</id>
+      <username>repouser</username>
+      <password>repopwd</password>
+    </server>
+    -->
+
+    <!-- Another sample, using keys to authenticate.
+    <server>
+      <id>siteServer</id>
+      <privateKey>/path/to/private/key</privateKey>
+      <passphrase>optional; leave empty if not used.</passphrase>
+    </server>
+    -->
+
+     <server>
+      <id>nexus</id>
+      <username>admin</username>
+      <password>admin123</password>
+</server>
+
+NB!! how to know if you are deploying the artifact to the release or snapshot artifactory
+•	In the pom.xml file look for : <version>0.0.2-SNAPSHOT</version>
+•	if the -SNAPSHOT is there it will be deployed to that snapshot artifactory 
+•	if you remove the -SNAPSHOT <version>0.0.2</version> then it will deploy to the release artifactory.

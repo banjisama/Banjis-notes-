@@ -1,0 +1,219 @@
+How to install Maven
+Prerequisite:
+•	AWS Acccount.
+•	Create Security Group and open Required ports.
+•	22 ..etc
+•	Create Redhat EC2 T2.medium Instance with 4GB of RAM.
+•	Attach Security Group to EC2 Instance.
+•	Install java open JDK 1.8+
+
+1)	Install Java JDK 11+ and other softares (GIT, wget and tree)
+# install Java JDK 11+ as a pre-requisit for maven to run.
+
+1)	sudo hostnamectl set-hostname maven
+sudo su - ec2-user
+2)	cd /opt
+3)	sudo yum install wget nano tree unzip git-all -y
+4)	sudo yum install java-11-openjdk-devel java-1.8.0-openjdk-devel -y
+5)	java -version  to see which version of java you are running. 
+6)	git –version   to see which version of java you are running.
+
+2)	Download, extract and Install Maven
+1)	#Step1) Download the Maven Software
+•	sudo wget https://dlcdn.apache.org/maven/maven-3/3.9.2/binaries/apache-maven-3.9.2-bin.zip
+2)	sudo unzip apache-maven-3.9.2-bin.zip
+3)	sudo rm -rf apache-maven-3.9.2-bin.zip
+4)	sudo mv apache-maven-3.9.2/ maven
+
+3)	 Set Environmental Variable - For Specific User (eg ec2-user)
+1)	vi ~/.bash_profile  # and add the lines below (right under the first comment)
+2)	export M2_HOME=/opt/maven
+3)	export PATH=$PATH:$M2_HOME/bin
+# if for some reason the path did not work run : PATH=$(echo "$PATH" | sed -e 's/:\/opt\/maven\/bin$//')    just like any command it will reset the path then you can start step 3 all over again. 
+
+4)	 Refresh the profile file and Verify if maven is running
+•	source ~/.bash_profile
+•	mvn -version
+
+Theory
+Maven central repo: selenium dependencies 
+https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
+•	click on the version number you want and copy the code from <dependency>  <dependency>
+
+what is maven?
+•	Apache maven is a software project and comprehensive tool, it is an open source based java build tool. 
+•	It is based on the concept of a project management model (POM)
+•	Maven can handle a projects build, reporting and documentation. 
+•	It’s most powerful feature is it’s ability to download project dependency libraries automatically from either the maven local repo, remote repo/proxy repo or central repo (internet). 
+•	It was originally developed in java for java codes.
+•	The vendor for maven Is Apache. 
+
+Software Development Life cycle [SDLC]
+Coding  testing  Build  Deployed  monitor 
+•	Build – Build tools like maven are used to create packages that application servers /software can understand.
+•	Deploy – projects are deployed using programming languages like:
+	Java
+	Python
+	nodeJS
+	.NET
+	JAVASCRIPT etc...
+
+IQ: what projects are you supporting in your environment?
+•	We support  java projects or projects written in java, a few .NET, phython and nodeJS projects.
+•	We also support apps written in languages by developers.
+
+Build tool for each programming language:
+•	JAVA  maven/ ANT / Gradle 
+•	.net  NaNt / msBuild 
+•	JAVASCRIPT  Gulp / Grant 
+•	PyBuilder  Ruby
+•	NodeJS  Npm 
+
+What is unit testing?
+•	The testing of individual units or components of each line of code by developers.
+•	Developers write unit test cases and perform unit test.
+
+A software is normally available in 3 options
+•	Incensed version – pay for it.
+•	Free version – free but you don’t have the source side.
+•	Open source edition – it is free and the source code is available.
+
+Importance of java?
+•	To run maven java need to be operating already.
+
+
+Where should packages from the internet interned be downloaded?
+•	/opt directory 
+•	Hence  cd /opt/maven/ -- then download your packages there.
+•	Files to take note of are : mvn in bin directory and settings.xml in the conf directory.
+
+Generally, we have:
+•	Standalone applications  .jar
+•	Web applications  .war 
+•	Enterprise applications  ear 
+Where can dependencies be found?
+•	Maven local repo  .m2/repository 
+	Ls -a in home dir you will see .m2 dir
+	You will only see this dir if you have already ran the mvn package command.
+	Cd ~/.m2/repository  you can see all the dependencies 
+•	Maven remote / proxy repo
+•	Maven central repo 
+
+NB!!! Problem 
+	Everyone one knows that mavens default repository full of our dependencies are in the .m2/repository dir, it is not secure so we need to change its location.
+	To do that if you  ls ~/opt/maven/conf  (remember you downloaded maven in the /opt dir) you will see the settings.xml file – its this file you need to edit to change your local repository info. 
+1.	vi ~/opt/maven/conf/settings.xml
+2.	look for : 
+<!-- localRepository
+          The path to the local repository maven will use to store artifacts.
+          Default: ${user.home}/.m2/repository
+        <localRepository>/path/to/local/repo</localRepository>
+  -->
+3.	right under this paste copy the last line and edit it 
+        <localRepository>/path/to/local/repo</localRepository>         <localRepository>/tmp/repo</localRepository>
+•	now the local repository has been changed to the /tmp dir.
+•	You can choose any system dir you want and make it your new repository location.
+•	It doesn’t have to be the /tmp.
+4.	Then go back to your repository folder, delete all old builds by running mvn clean and then run a build again by running mvn package. 
+5.	If you then ls /tmp you will see a dir called repo with all your dependencies in them. Meaning you have successfully made tmp your local repository for maven. 
+ 
+
+Maven life cycle
+1. Clean           clean  (mvn clean)
+    mvn clean      delete old builds 
+
+2. Site/Swagger     site
+                   create java classes (byte code)
+                   JVM 
+                   app.java = 'echo DevOps is great'
+                   app.class = 012450012354
+
+                Goals:
+3. default     mvn validate:
+                  It will validate the project structure and resource files
+               mvn compile:
+                  It will compile all java classes and test classes
+               mvn test:
+                  It will run the unit test cases (JUNit)
+               mvn package:
+                  It will create packages in target directory  ( creates a package in a dir it makes called target not that it creates a package in a directory of your choosing) 
+                      (*.jar/*.war/*ear) app.war
+               mvn install:
+                  It will store the build artifacts in MAVEN LOCAL REPO
+                     default location: .m2/repository               
+               mvn deploy:  NEXUS
+                  It will upload the build artifacts into maven-remote-repo
+
+Standalone Applications – *.jar  Java Archieve
+=============================================  
+ java code ONLY   
+    contains only java classes
+    jar = .classfiles
+    maven-standalone-application.jar
+    app.jar 
+
+Web Applications  – .war  web Archieve
+======================================
+Java code + 
+web content ( CSS, HTML, JS, videos, images…,) 
+Backend code   - frontend code
+maven-web-app.war
+tesla.war
+
+Enterprise applications – .ear –
+==================================
+ Enterprise Archieve
+    Multiple Modules
+      Java code + web content 
+    Ear =  war(s) + jar(s)
+    Banking applications
+    maven-web-application.war
+    maven-enterprise-application.ear
+   modules:
+    login / 
+    accountCreation / 
+    moneyTransfer 
+Based on our project we are going to create 
+   multiple packages either;  jar, war or ear packages:
+
+We create packages from rawCodes:
+
+we are creating deployable packages from java codes:
+  1.  src-- source code   :
+  2.  Unit-Test-Cases     : 
+         JAVA  --> JUnit test cases 
+         .Net  --> NUnit test cases 
+          C++  --> CPPUnit test cases  
+
+  3. BuildScripts  -- pom.xml    
+        xml  = extensible mark-up language 
+               It is a dynamic language. 
+               Tags can be created based on the user preferences
+
+How to deploy a package once it has been built
+1)	Standalone files – run : java -jar “filename.jar)” (you can rename the file with the mv command to make it easier to run but the file must end with .jar)
+2)	Web files – they can only be ran with tomcat
+3)	Enterprise files - ?
+
+NB!!
+•	You cannot run tomcat and maven in the same server, because if the server shuts down, you lose everything.
+•	You need two separate servers.
+
+Pom.xml 
+•	For stanalone and web applications, we only have 1 pom.xml file in the target directory once you make a build.
+•	But for enterprise applications, once you make a build there can be a -ear / -war directory with the target directory created in both those directories 
+•	There will be pom.xml in both these directories.
+•	This pom.xml in these directories are child pom.xml, if you vi into them you can a comment talking about the parent pom.xml.
+•	However outside these directories, there is also another pom.xml, this file is the parent file
+Mvn clean package 
+•	This command will delete old builds and create a build at the same time as
+Mvn package – DskipTest / mvn package – Dmaven.test.skip =true 
+•	Assuming you have already run the mvn command and there were some failures with the unit test cases causing the package not to build, but those failures are minimal and still within an acceptable range(or it is taking too long for the project to build), you can run either of these commands to skip the unit test cases so you can build the package.
+•	However, skipping test cases compromises the security of the project. 
+Mvn package -pl “model name” / mvn -P “model name” 
+•	either allows you make a build for a specific project of your choice.  
+Mvn install 
+•	it allows you make a build and store the file in our local repository.
+•	When the install is done it will show you the absolute path to that build in your local repository so you know how to find it.
+Sudo find / -name “name of file/dir you want”
+•	It will list the absolute path to any file or directory, allowing you to find it’s location. 

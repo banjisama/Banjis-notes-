@@ -1,0 +1,121 @@
+Tomcat 1
+Prerequisite for tomcat to run:
+•	You need to have a Redhat Linux server
+•	Port (ssh) 22 and port 8080 needs to be open, you open theses in your security group.
+	If you create a new security group but ssh-port 22 isn’t open, you won’t even be able to connect to your server on mobaxterm because you can’t ssh into the server.
+•	Then create a script, paste the commands from github and run the script to setup tomcat.
+
+Home directory:
+•	The tomcat home directory is where the tomcat software is downloaded and extracted, so basically where we ran wget “url”.
+•	After running the script our home directory for tomcat will be /opt/tomcat9
+•	If we run ls here we will be able to see all the important directories for tomcat.
+•	 Common uses cases (common home directories for tomcat used by companies)
+	/app/tomcat
+	/usr/local/tomcat
+	/opt/tomcat9 
+	
+Starting and stopping tomcat:
+•	When you run the script from github, it also creates soft links for you.
+•	To start or stop tomcat, simply run starttomcat or stoptomcat (use sudo if needed) 
+•	In the bin directory we have commands like startup.sh & shutdown.sh. these allow you start and stop tomcat. To access these commands, you have to use the absolute path
+	sh /opt/tomcat9/bin/startup.sh – starts up tomcat
+	sh /opt/tomcat/bin/shutdown.sh – stops tomcat 
+
+how to confirm if tomcat is working:
+1.	ps -ef | grep tomcat
+2.	curl -v localhost:8080   port number (in case you changed the port number, use that one) 
+3.	curl “public ip address”:8080 
+4.	telnet localhost 8080   or  telent 44.202.51.134 8080 (you need to yum install telnet) 
+
+
+
+
+
+Accessing tomcat online
+	public ip:port number 
+
+
+how to change the port number:
+	if you vim into server.xml via the absolute path you will see
+-->
+    <Connector port="8080" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               redirectPort="8443"
+               maxParameterCount="1000"
+               />
+	change the number to whichever number you want and this will be your new port number.
+	NB!! – after the changes are made, you need to restart tomcat by shutting it down and starting it up again. Then the port number will have changed.
+	If you change the port number and curl -v localhost:8080, it won’t work anymore because tomcat listens on a different port number now. 
+	If you curl public ip:8080, it also wont work because tomcat is listening on a different port number now
+•	To fix this you need to edit inbound rules in the security group for tomcat on AWS
+•	Then add the new port number.
+•	Once done and you go back to your terminal, run the command again, it will work
+
+Nb!! Conf directory 
+•	When you want to deploy a .war file or moving a .war file from maven to tomcat server, it need to be in the webapps directory.
+•	So in webapps directory any .war zip file will automatically be extracted and deployable.
+
+How to connect to tomcat on your browser?
+•	Once you search the public ip: port number, you’ll be taken to a tomcat page.
+•	To connect to tomcat, you need to click app manager, but if it’s your first time ever logging into tocat, when you do you will get access denied.
+•	To get permission you need to configure tomcat.
+1.	You do this by running sudo find  / -name context.html
+o	vi /opt/tomcat9/webapps/manager/META-INF/context.xml
+o	then you will find
+<Valve className="org.apache.catalina.valves.RemoteAddrValve"
+          allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />
+o	this represent tomcat only being accessible via the local host so http wont work.
+o	To fix this we need to make this a comment so it does not take effect anymore.
+o	Start the comment with <!-- and end it with --> 
+<!--
+  <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+          allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" />
+-->
+2.	Now we need to add users so we can login 
+o	We do this by vim into tomcat-users.xml via the absolute path
+o	 vim /opt/tomcat9/conf/tomcat-user.xml
+o	Towards the end you will see this, copy it and paste it before the closing tag in this file
+o	Closing tag: </tomcat-users>
+<user username="tomcat" password="<must-be-changed>" roles="tomcat"/>
+o	Then edit this and put in your own username and password
+o	As for roles we have – manager-gui, admin-gui, manager-script and so on
+o	NB if only admin-gui is entered, you will get permission denied because that role does not have enough authorization to access that page.
+o	But the manager roles give you authorization to login.  
+o	Nb! You can assign more than 1 role to a user.
+
+Uploading a file to tomcat web application manager.
+Method 1:
+o	Download your .war build that’s been uploaded to github somewhere you can easily access on your computer.
+o	Click on Select WAR file to upload, upload it and click deploy.
+o	After that file will show up on if you scroll up, when you click on it, it will deploy it’s contents.
+
+Method 2:
+o	Sending your .war file from the build server (maven) to your tomcat server
+o	Now you need to be in your maven server.
+o	1)You need your tomcats Ip address.  2)you need to cd into your war directory, (the one just before you enter the target directory)  create a file with the same name as the private key you use to access tomcat, copy the code in that key and paste it onto this new file.
+•	Then run : scp -i “name of created key target/”name of extracted war file” ec2-user@Ip address:/opt/tomcat9/webapps/
+•	NB!! The -i stands for the private key 
+•	scp -i Class32Aws.pem target/tesla.war ec2-user@44.202.51.134:/opt/tomcat9/webapps/
+•	you use target/ because the war file you want is in the target directory 
+•	:/opt/tomcat9/webapps/ - this is where you want this build to be moved to
+•	the key you create needs to be in the web directory / the directory where you run this command to move the file to the tomcat dir. NB!! Not in the home directory.
+
+
+Hot fixes 
+	assuming there is a small error with our code or for example we have grammatical errors, we can perform hot fixes to resolve the situation 
+	as we know the war packages are deployed to the webapps folder.
+	We need to vi / vim into:
+	 /opt/tomact9/webapps/“name of extracted war package”/jsps/home.jsp
+	Once you are in the file, any saved edits will automatically be deployed.
+
+Port numbers:
+	80 – http
+	443 – https
+	8080 – Jenkins/ tomcat /JBoss
+	0-1024 – reserve ports
+	1025-65535
+	465 – SMTP
+	587 – SMTP
+	22 – ssh
+	23 – ftp 
+	NB! A server has 65535 ports 

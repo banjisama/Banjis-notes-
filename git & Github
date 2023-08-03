@@ -1,0 +1,177 @@
+Git and GitHub
+
+What’s the difference between Git and GitHub
+	While Git is a tool that's used to manage multiple versions of source code edits that are then transferred to files in a Git repository, 
+	GitHub serves as a location for uploading copies of a Git repository.
+
+Git Commands	Name 	Description 
+	Git status		 used to track the location of filess
+	Git log 		list all commits and commit ID’s
+	Git log “file name” – lists the commit of a particular file.
+how do you delete a commit?
+•	When you run git log you can see all commit ID’s 
+•	To delete the most recent commit  git reset --hard HEAD^ 
+•	To delete 2 commits  git reset --hard HEAD~2
+•	If you change the number to 3, it will delete the last 3 commits made.  
+	Git show “part of commit ID”-		used to show more information about a file, you will also be able to see the code in the file.
+
+	Git branch	– used to see which branch you are currently in.
+	Git branch -m “new name”– used to change the name of a branch.
+	Git branch “new branch name” – used to create a new branch. 
+	Git branch -d “branch name” – used to delete a branch
+	Git switch / Git checkout	– used to switch from one branch to the other.
+	Git remote -v		– used to check if we have a remote repository.
+	Git add “file name”		– used to move a file from the working area to the staging area.
+•	Git add . – moves all untracked files from the working to staging area.
+How do you move a file from the staging area back to the working area?
+	git reset “file name” – moves a particular file back to the working area 
+	git reset HEAD – moves all files from the staging area to the working area
+
+	Git commit -m “write a commit message”		– used to move a file from the staging area to the local repo.
+	Git commit -a -m – used to commit an edited file. Meaning if you already moved a file to the staging area but edit it again, you can just run this command instead of first running the git add command then the git commit command. The file is already being tracked so you don’t need to run git add again.
+	Git remote add “alias name” “URL”		 (Which you get from GitHub) – used to add a remote repository. After this git remote -v would show this remote repository.
+•	The Alias name can be any name you choose to make.
+	Git push “alias name” “branch name”		– used to push a file to the remote repo.
+	Git merge 
+vs 
+Git rebase
+Vs
+Git cherry-pick		There are 2 days of merging files between tow branches
+1.	git merge “target branch” “– used to merge files from two different branches.
+2.	git rebase “target name” – also used to merge the files between both branches.
+Whats the difference?
+	git rebase creates a new set of commits for the files being merged from one branch to another 
+	git merge – creates a new merge commit that combines the changes in branches.
+Therefore it is better to run the git rebase command over the git merge command 
+	git cherry-pick “part of commit ID number” – merges a particular file from1 branch to the other. 
+	Git diff “name of target branch” 		– used to check if there are any differences in 2 branches before merging.
+
+	Git clone
+Vs
+Git pull
+Vs 
+Git fetch		git clone “url” – clones everything in the remote repo and bring it to the system.
+•	Best used when you have no files from the local repo and you need access to them.
+	git pull - Meaning that it will pull changes in the files from the remote repo and merge them with the files in the local repo allowing you to see them.
+•	Best used when you already have files from your remote repo and you just want updates on files or new files added.
+Git fetch - It will get the update from git remote repo and will update your local repo. But it will not merge with Local working copy. Meaning although it gets the changes from the remote repo, you won’t be able to see them in your system.
+	ls -a 		used to list hidden files and files created by IDE’s 
+	git tag	-	used to list any available tags
+	git tag -d “tag name” – deletes a tag
+	Token		– when you are about to push a file, you will need a token as the password.
+•	Once this token is created you have to copy and save it somewhere because if you don’t that token is gone for good.
+•	How to create a token. Go to github, settings, developers options on your left (all the way at the bottom), generate token, create a class token,
+ 
+
+	Git stash 		Saves WIP files
+	The files need to be staged for this command to work
+	If you need to switch branches and this files is not ready to be committed, run this command 
+
+	Git stash list – used to list any backed up files 
+	git stash apply – moves files back to the staging area 
+	git stash apply stash@{0} – will resume my very first back up
+	git stash drop – deletes my latest back up
+	git stash drop stash@{0} – will delete my first back up 
+	the highest number {} will be the most recent back up
+	Https url
+VS
+Ssh url		https url – when you push a file or dir to the remote repo, you constantly need authorization, meaning you need your username and token to push a file
+	ssh url – after you have been authorized once, you don’t need authorization to push a file again. 
+	Public repo
+VS
+Private repo 		public repo – you can pull a file from the remote repo easily
+	private repo – you need authorization to be able to pull from a private repo 
+therefore its better to create a remote repo using the ssh url instead of  the https url. 
+
+How to create a private repo on github
+Method 1
+1.	in your target repository, click on settings next to insight.
+2.	Then scroll down till you see danger zone
+3.	Click on change visibility, eventually you will be able to change from public to private
+
+Method 2
+	Create a new repo and select private repo instead of public 
+	Ssh url		when you want to push a file via the ssh url you need to have a public key on github to do so.
+	If you don’t you will get permission denied.
+How to create a public key:
+1.	Run  ssh-keygen 
+2.	Cat  ~/.ssh/id_rsa.pub
+3.	Copy that code 
+4.	Got to github
+5.	Settings 
+6.	Look for SSH and GPG key on your left
+7.	Click on new ssh key
+
+
+
+
+How to push a file from the local Repository to the Remote repository 
+Generally, there are 4 stages or environments in a git repository 
+	The working area
+	The staging area
+	The local Repo
+	The remote Repo
+
+1.	Create a directory.
+2.	To turn this directory into an empty repository run = git init 
+3.	Create a file using the touch command
+	It’s this file that we will push from the local repo to the remote repo.
+	Once the file is created it will be in the working area.
+	If you run git status, the name of the file will be in red and it will tell you that this is an untracked file.
+4.	Working area  staging area – run = git add “file name” or git . 
+	If you run git status, the name of the file will be green and it will tell you this file has been staged.
+5.	Staging area  local repo – run git commit -m “write a message”
+	Once you run this command, a version of this file will automatically be created with a version number called the commit ID.
+	If you run git log, you can see all commits with their commit id’s.
+	If you run git show “commit number” you can see more details about the contents of that file.
+	If it’s a user’s first time running this command, the system will want to know who you are. You need to enter you github username and password, it will tell you how to do it, just copy and paste. 
+	E.g.,
+	 git config --global user.name "Landmark Technology"  -- press enter
+	git config --global user.email "mylandmarktech@gmail.com"  -- press enter
+6.	local repo  remote repo 
+	you need to first add the remote repo by running = git remote add “alias name” “repo url”
+	you can run git remote -v to confirm that the remote repository has been created.
+	Run = git push alias name branch name – this pushes the file to the remote repo.
+	However, it will first ask you for your username and then a password.
+	The password is a token you create on github.
+	Done 
+
+
+Side notes 
+•	you can also create branches on github, if you click on master on the left hand side and write a name, it will ask you if you want to create a branch from master.
+•	You can also merge files on git hub. You need to first create a pull request, when you ready to merge it will ask you to compare the two branches you wish to merge and then you can confirm the merge. 
+
+IDE’s & .ignore file 
+•	There are files created by IDE’s and also hidden files that start with “.”
+•	ls -a will show you those files.
+•	If there are files that exist that you don’t want tracked you can mkdir .ignore
+•	then mv those files to the .ignore file 
+
+
+
+
+
+
+Differences between tags and branches 
+Tags	Branches 
+Immutable – unable to change	Mutable – can be changed 
+Unmodifiable 	Modifiable 
+Should only be created from the master branch 	Can be created from any branch 
+made after production	Created during development - WIP
+How to push all tags  git push --tags	How to push all files in a branch  git push --all
+	
+
+
+Git branching strategies 
+
+
+Git best practices
+	use branching strategies and pull requests
+	commit once you finish with a task
+	Avoid merge conflicts
+	Don’t commit half done code – use git stash
+	Test code before commit
+	Write good commit messages before committing
+	Try to use git commands rather than GUI (graphical user interface) tools
+	Use ssh url and PAT over https
+	Use rebase over git merge

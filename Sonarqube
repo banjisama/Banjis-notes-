@@ -1,0 +1,70 @@
+SonarQube
+Types of code quality tools:
+1.	Sonarqube
+2.	Reshapers
+3.	Codacy 
+4.	Checkmarks 
+
+Example of a benchmark/standard for a quality software application:
+•	Code coverage should be greater than 85%
+•	Duplicate lines should be less than 5%
+•	There should be no vulnerabilities in the code [pw=1234]
+•	Code smells should be less than 5
+If the actual results are worse than the benchmark, it will lead to a build failure when you run mvn sonar: sonar 
+
+NB! 
+•	SonarQube opens on port 9000 
+•	Follow the steps on github to install and configure SonarQube.
+•	Your port security group needs to be port 9000 but you can open all ports as well so you don’t need to select individual ports. 
+How do you run the SonarQube command?
+•	Mvn sonar:sonar
+•	This compares actual results to the benchmark set 
+
+Where is sonarqubes home directory?
+•	/opt/sonarqube
+
+
+
+
+How do you change the port number?
+•	Vi /opt/sonarqube/conf/sonar.properties 
+•	Find the port number and change it to the port number you want.
+•	Remember to remove the comment.
+•	Once you save those changes you need to restart sonarqube so that sonarqube listens on this new port number.
+
+Maven – SonarQube integration
+•	In maven cd into the war directory just before you get to the target directory (if you make a build).
+•	Vi into pom.xml
+•	Under the properties tag, change the ip address to SonarQube’s private/pubic Ip address.
+•	If you changed your port number in the sonarqube server, you also need to change it in the pom.xml file as well.
+•	After you save the changes, you can now access sonarqube on your web browser.
+NB!!
+•	Because I stop and start servers all the time, their public and private ip address changes every time I start up the server again.
+•	So if I stop the sonarqube server, once I start it again and I want to run mvn sonar:sonar I need to vi into pom.xml in maven and change the ip address so that it builds successfully to the correct ip address.
+•	If I don’t change the ip address, the build will be successful but it wont show up on my sonarqube web browser.
+
+How to access sonarqube on your web browser?
+•	Public ip address:port number 
+•	Login details – default login user name and password is admin admin respectively
+
+How to add a new user?
+•	You need to log in to sonarqube web browser
+•	Administration  security  create user.
+•	If you click on all you can grant or take away admin access from the created user.
+•	If you want to login as this new user, you can vi into pom.xml and change the login and password details to the new user you just created. 
+
+How to log into the sonarqube server using a token?
+•	The option to create a token is n ext to the users name. you can create one and copy and save the token somewhere else.
+•	Vi into pom.xml, paste the token for login.
+•	Comment the password line using <!-- & --> to start and end the comment.
+•	The token is a combination of the user name and password.
+
+
+3 main sections in the sonarqube web browser:
+•	Rules
+•	Quality profile – for each language there is a default quality profile like sonar way. You can create your own quality profile and apply them 
+•	Quality gate  - you can also create your own quality gate. 
+
+Difference between SonarQube and sonar cloud?
+•	Sonarqube – you need a server running sonarqube for the web browser to operate.
+•	Sonar cloud – you don’t need a browser 

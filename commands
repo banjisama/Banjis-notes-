@@ -1,0 +1,227 @@
+
+
+Group name	Command	Explanation 
+	cd	Used to change location
+	cd -It allows you to move from one directory to the next.
+	cd .. – allows you to move a directory backwards 
+	cd “dir-name” - allows you enter that directory 
+	cd “dir-name” / ”sub-dir_name(s)” – you need to list the parent directory and sub directories to get into the directory you want.
+
+	mkdir
+&
+Rmdir
+&
+Rm 
+	Allows you make a directory 
+	mkdir  “dir_name”– allows you make a directory with no sub directories.
+	mkdir -p “dir_name1”/ “dir_name2” --- allows you make a parent directory with sub directories.
+•	dir_name2 would be the sub directory 
+•	-p = parent directory
+	rmdir --- deletes an empty directory 
+	rm -rf --- removes a directory with sub directories & files.
+	rm --- deletes a file
+
+	Tab (a key on your laptop)	•	the terminal knows every directory in the system.
+•	If you wanted to get to /opt/tomcat9/conf
+•	Type opt/to (then press tab) 
+	It will autofill the words for you because the system knows tomcat9 is the only directory in that file so it will find it for you.
+	Useradd
+& 
+Userdel
+(needs sudo) 	Used to create and delete a user
+	sudo useradd “name” --- creates a user
+	sudo userdel “name” --- deletes a user but leaves their name in the home dir and what they were working on.
+	Sudo userdel -r “username” --- deletes everything about that user.
+	Pwd	Shows you your present working directory
+	. = represents your pwd
+	~ = your home directory 
+	/ = root directory 
+	Ls	Used to list you the files and directories in your pwd
+	ll = long list, gives you full details about the files and directories.
+	ls -lh = similar to ll but this allows you to read the size of files or directories in human readable form. 
+	ls /home or ls ~ = lists contents in the home directory.
+	ls -a  used to list hidden files and files created by IDE’s or hidden files that start with a “.”
+
+	sudo	Gives you root privileges
+	sudo = superuser do
+	sudo su -u “user_name” --- allows you switch from 1 user to the other
+•	 -u = when u add -u it shows you the last time you switched to that user and if there were failed attempts to log into that users account.
+	If you sudo su (without adding -u) you will be get permission denied for every command you run, even Ls because although you would have switched users, 
+you wont be in their ~ so you cant execute commands. 
+	Sudo -I ---used to switch directly to the root user.
+	Grant user sudo access 
+1.	vi /etc/sudoers
+2.	scroll down till you find --- ## Same thing without a password . (allows added user use sudo without needing a password)
+3.	under --- %wheel        ALL=(ALL)       NOPASSWD: ALL
+4.	change %wheel to the user name you want to grant sudo access to. Leave the rest the same.
+5.	Remember to remove the # in front of the name you add.
+	hostname	Tells you the hostname of your server
+	hostname “name” --- creates a temporary hostname.
+1.	sudo hostnamectl set-hostname “hostname” 
+2.	sudo su – “username”
+	then your hostname is permanent
+	etc	Contains configuration files
+	/etc/passwd --- shows details about users
+	/etc/shadow --- shows details about users’ passwords
+	/etc/ssh/sshd_config --- they are ssh configuration files. 
+	/etc/group --- lists all the groups that exist.
+	etc/proc/meminfo --- checks info about your computer’s memory.
+	etc/proc/cpuinfo --- checks info about your computers cpu.
+•	Proc – information about your computer / system. 
+	cat 	Used to read a file 
+	Cat -n “filename” --- numbers the file when you read it.
+	head & tail	Also used to read a file
+	tail “filename” --- lists the last 10 entries in that file.
+	head “file name” --- used to read the first 10 entries in that file.
+	tail -5 “filename” --- allows you list the last 5 lines
+•	you can use any number for the head and tail and it will list those lines. 
+
+	Less & more 		less “filename” --- allows you vi into a file and scroll through the file which normally wouldn’t be possible. 
+•	Good if the content in the file is a lot.
+•	Nb! You can’t edit the file 
+	More “filename” --- allows you cat the file one page at a time.
+•	Use the direction arrows to move to the next page.
+	whereis
+Vs
+find		whereis command is used to find the location of system binary files (commands)
+	find is used to find files or dir                           sudo find / -name “name of file” 
+
+	vi 	Allows you enter a file so you edit and add content to it.
+	Remember once you enter into a file you will be in command mode, meaning you can’t edit the file.
+	Press i to edit the file.
+	To save and quit press esc, then :wq!
+•	wq = write and quit
+	 To quit without saving press :q!
+	Faster option – shift + zz = save & quit 
+	If you are already in a file and you want each line to show numbers run  :se nu
+	umask	Determines / sets the permissions a file or dir receives at creation.
+	Default umask value = 0022
+•	Run = umask
+	To set a umask value run --- umask “enter the number”
+	Max umask value = 0000
+•	Means a file or dir will have rwx permission when created / full permissions.
+	How to get umask value – full permission minus the value of the target permission you want.
+	Max permission for a file = 0666
+	Max permission for a dir = 0777
+	Default permission for a file = 0644
+	Default permission for a dir = 0755
+	chmod	Used to change the permission of a file 
+	Run chmod “filename” “permission number” 
+	E.g., chmod banji 0666 --- gives this file full permission.
+	Chmod +r “file or dir name” --- gives both users and groups read permission
+	Chmod +x “file or dir name” --- gives both users and groups execute permission.
+
+	Chown
+(need sudo)	Used to change file ownership.
+	chown “new username” “file name” – changes ownership to a new user.
+•	E.g., chown navy file.me – navy now has ownership of this file.
+	chown “username”:“username” it changes ownership of the user and the group at the same time.
+•	E.g., chown david:david file.me
+•	Or chown david:navy file.me – the ownership of the user got changed to user david but the ownership of the group got changed to navy.
+•	Nb! To change 
+	Chgrp
+(need sudo)	Used to change ownership of a group
+	Run --- sudo chgrp “new owner name” file name”
+•	Changes group ownership of that file.
+	groupadd
+&
+groupdel
+(needs sudo)	Used to create a group
+
+	Run – sudo groupadd “name” – makes a group
+	Run --- sudo groupdel “name” – deletes a group
+	usermod	Used to modify a user’s account.
+	When a new user is made, he/she is automatically assigned to a group.
+	However you can create another group to add a user into.
+	Run --- usermod -aG “username”
+•	NB!! The group already needs to be exist before you can tun this command
+	history	Shows you the last 1000 commands ran
+	grep	Used to extract patterns from a file
+	Run – grep “what u want” “filename/dirname(s)”
+	If you want to grep a file that might have upper and lowercase letters run --- grep -i “filename”
+	Pipe command |		Allows the output of the first command to be the input of the next command.
+•	It’s a temporary storage.
+	E.g., cat “file name” | sort “filename” | grep “a (for e.g,)”
+	sort	Used to view a file in alphabetical order
+	Sort “filename”
+	Ctrl + c	Kills a process
+	date	Used to show & modify date and time.
+	Nb! If you want to change the date
+1.	First find the time zone you want --- timedatectl list-timezones ---- it will list all the timezones recognized by the system.
+2.	Copy the name of the time zone you want.
+3.	Run --- sudo timedatectl set-timezone “name you copied”
+
+	Passwd
+(need sudo)		Used to assign passwords to a user 
+	Run --- sudo passwd “username”
+•	When you type in the password you won’t be able to see it. 
+	id 	Shows users id and all the groups that user belongs to.
+	Id “username”
+	Login using ssh -I 	•	Cd into desktop (make sure your key is there by ls desktop) 
+•	ssh -i “name of your key” ec2user@”public ip address”   
+•	ssh -i Class32Aws.pem ec2-user@44.202.51.134
+•	
+	Passwd -l
+&
+Passwd -u
+(use sudo)		Used to lock and unlock a user’s account
+	sudo passwd -l “username” --- locks the account
+	sudo passwd -u “username” --- unlocks the account
+	chage	Used to create a user’s account with a time limit by changing it’s aging information.
+
+Run --- sudo chage “username” – run the command and you will see this.
+1.	Minimum Password Age [0]:
+•	[0] represents the minimum number of days the user’s password should be active for.
+•	Best to leave it at 0 and press enter.
+2.	Maximum Password Age [99999]: 180
+•	[99999] represents the max number of days any users passwd can be active.
+•	I chose 180 days
+3.	Last Password Change (YYYY-MM-DD) [2023-05-30]:
+•	Shows you the date when the users password was last changed.
+•	Just press enter
+4.	Password Expiration Warning [7]:
+•	[7] means 7 days before 180 days is complete, the system will alert the user that their passwd is about to expire.
+•	You can press enter or set you own value.
+5.	Password Inactive [-1]: 5
+•	[-1] means the passwd will never expire
+•	I chose 5, meaning if this users account is inactive for 5 days in a row, their passwd automatically expires.
+6.	Account Expiration Date (YYYY-MM-DD) [-1]:
+•	You set a date when you want this account to expire.
+
+	mv 	Used to move a files location or rename a file or directory 
+e.g.,
+•	Files = david, michael, banji
+•	Dir = loso, brick, mavric
+
+•	mv david bane / mv lose lose = it will rename the file or directory bane and lose.
+
+•	mv michael ~/banji =it will move that file into another file called banji
+
+•	mv david ~/mavric = it will move that file into the directory called mavric
+	Curl & ip address	•	curl ifconfig.me =public ip address 
+•	hostname -i = private ip address 
+
+to see if the server is working:
+•	curl -v localhost:portNumber
+•	curl -v ipAddress:portNumber 
+	Cron tab	* * * * *  command to execute
+ ┬ ┬ ┬ ┬ ┬
+ │ │ │ │ │
+ │ │ │ │ │
+ │ │ │ │ └───── day of week (0 - 7) (0 to 6 are Sunday to Saturday, or use names; 7 is Sunday, the same as 0)
+ │ │ │ └────────── month (1 - 12)
+ │ │ └─────────────── day of month (1 - 31)
+ │ └──────────────────── hour (0 - 23)
+ └───────────────────────── min (0 - 59)
+
+•	0 * * * * -this means the cron will run always when the minutes are 0 (so hourly)
+•	0 1 * * * - this means the cron will run always at 1 o'clock.
+•	* 1 * * * - this means the cron will run each minute when the hour is 1. So 1:00, 1:01,
+
+First star = Minutes: 0-59
+Second star = Hours: 0-23
+Third star = Day of Month: 0 - 31
+Fourth star = Month: 0 - 12
+Fifth star = Day of Week: 0 - 6 (0 means sunday)
+		
+
